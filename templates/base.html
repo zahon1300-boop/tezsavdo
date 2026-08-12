@@ -15,7 +15,7 @@
     <meta name="theme-color" content="#6366f1">
     {% block extra_css %}{% endblock %}
 </head>
-<body class="dark-mode">
+<body>
     <div class="top-category-bar d-none d-lg-block">
         <div class="container">
             <div class="top-category-scroll">
@@ -51,8 +51,7 @@
                 </div>
                 <div class="header-actions d-none d-md-flex align-items-center gap-3">
                     <button id="darkModeToggle" class="theme-toggle" title="Mavzu">
-                        <i class="fas fa-moon"></i>
-                        <i class="fas fa-sun"></i>
+                        <i id="themeIcon" class="fas fa-sun"></i>
                     </button>
                     <a href="{% url 'istaknafarim' %}" class="wishlist-btn" title="Sevimlilar">
                         <i class="fas fa-heart"></i>

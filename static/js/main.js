@@ -23,16 +23,26 @@
     function initDarkModeToggle() {
         const toggle = document.getElementById('darkModeToggle');
         const mobileToggle = document.getElementById('mobileDarkModeToggle');
-        
+        const icon = document.getElementById('themeIcon');
         const saved = localStorage.getItem('theme');
-        if (saved === 'light') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (saved === 'dark' || (!saved && prefersDark)) {
+            document.body.classList.add('dark-mode');
+        } else {
             document.body.classList.remove('dark-mode');
         }
 
+        function updateThemeIcon() {
+            if (!icon) return;
+            icon.classList.toggle('fa-sun', !document.body.classList.contains('dark-mode'));
+            icon.classList.toggle('fa-moon', document.body.classList.contains('dark-mode'));
+        }
+
         function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
+            const isDark = document.body.classList.toggle('dark-mode');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon();
         }
 
         if (toggle) {
@@ -41,6 +51,8 @@
         if (mobileToggle) {
             mobileToggle.addEventListener('click', toggleTheme);
         }
+
+        updateThemeIcon();
     }
 
     function initScrollAnimations() {

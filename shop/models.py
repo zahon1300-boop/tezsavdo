@@ -191,7 +191,7 @@ class OptionValue(models.Model):
 
 class MahsulotVariant(models.Model):
     mahsulot = models.ForeignKey(Mahsulot, on_delete=models.CASCADE, related_name='variantlar')
-    sku = models.CharField(max_length=100, unique=True, blank=True)
+    sku = models.CharField(max_length=100, blank=True)
     narx = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     eski_narx = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     soni = models.PositiveIntegerField(default=0)
