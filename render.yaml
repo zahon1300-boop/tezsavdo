@@ -1,7 +1,87 @@
 services:
+  # Main Web Service
   - type: web
     name: tezsavdo
     env: python
     pythonVersion: 3.12.18
-    buildCommand: python -m pip install --upgrade pip && python -m pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput
-    startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 4 --worker-class sync --timeout 120
+    region: frankfurt
+    plan: standard
+    
+    # Build Configuration
+    buildCommand: >
+      python -m pip install --upgrade pip &&
+      python -m pip install -r requirements.txt &&
+      python manage.py migrate &&
+      python manage.py collectstatic --noinput
+    
+    # Start Command
+    startCommand: >
+      gunicorn config.wsgi:application
+      --bind 0.0.0.0:8000
+      --workers 4
+      --worker-class sync
+      --timeout 120
+      --access-logfile -
+      --error-logfile -
+    
+    # Health Check
+    healthCheckPath: /admin/
+    healthCheckTimeout: 30
+    
+    # Environment Variables
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings
+      - key: PYTHON_UNBUFFERED
+        value: "1"
+      - key: ALLOWED_HOSTS
+        value: "tezsavdo-777.onrender.com,localhost,127.0.0.1,*.onrender.com"
+    
+    # Disk Configuration (for media files)
+    disk:
+      name: media-storage
+      mountPath: /opt/render/media
+      sizeGB: 10
+    
+    # Autoscaling (optional)
+    autoDeploy: true
+    
+    # Logs
+    logRetentionDays: 30
+    
+    # Pre-deploy Script (optional)
+    preDeployCommand: python manage.py migrate --noinput
+
+# Optional: PostgreSQL Database Service
+# Uncomment to use PostgreSQL instead of SQLite
+# databases:
+#   - name: tezsavdo-db
+#     engine: postgres
+#     version: "15"
+#     plan: starter
+#     region: frankfurt
+#     ipAllowList: []
+
+# Optional: Background Worker (Celery/Background Jobs)
+# Uncomment if you need background task processing
+# workers:
+#   - type: worker
+#     name: tezsavdo-celery
+#     env: python
+#     pythonVersion: 3.12.18
+#     buildCommand: >
+#       python -m pip install --upgrade pip &&
+#       python -m pip install -r requirements.txt
+#     startCommand: celery -A config worker -l info
+#     envVars:
+#       - key: DEBUG
+#         value: "False"
+
+# Optional: Scheduled Jobs (Cron)
+# Uncomment to add periodic tasks
+# crons:
+#   - id: cleanup-old-files
+#     command: python manage.py clearsessions
+#     schedule: "0 2 * * *"  # Daily at 2 AM UTC
