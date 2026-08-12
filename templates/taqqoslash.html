@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Taqqoslash - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Bosh sahifa</a></li>
+            <li class="breadcrumb-item active">Taqqoslash</li>
+        </ol>
+    </nav>
+
+    <h2 class="fw-bold mb-4">Mahsulotlarni taqqoslash</h2>
+
+    <div class="empty-state">
+        <i class="fas fa-balance-scale"></i>
+        <h3>Taqqoslash ro'yxati bo'sh</h3>
+        <p>Mahsulotlarni taqqoslash uchun ularni yoqtirganlar ro'yxatiga qo'shing</p>
+        <a href="{% url 'mahsulotlar' %}" class="btn btn-primary">Mahsulotlarni ko'rish</a>
+    </div>
+</div>
+{% endblock %}

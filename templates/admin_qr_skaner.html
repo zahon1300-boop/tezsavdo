@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}QR Kod Skaner - TezSavdo Admin{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-qrcode fa-3x text-primary"></i>
+                        <h2 class="fw-bold mt-3">QR Kod Skaner</h2>
+                        <p class="text-muted">QR kodni skaner qiling yoki rasm yuklang</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="d-grid gap-2 mb-3">
+                            <button class="btn btn-primary btn-lg" id="startScanBtn" onclick="startScan()">
+                                <i class="fas fa-camera me-2"></i>Kamera bilan skaner qilish
+                            </button>
+                            <label class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-upload me-2"></i>QR kod rasm yuklash
+                                <input type="file" accept="image/*" onchange="uploadQRCode(this)" style="display: none;">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="scanResult" style="display: none;">
+                        <div class="card bg-light border-0">
+                            <div class="card-body">
+                                <h5 class="fw-bold mb-3"><i class="fas fa-check-circle text-success me-2"></i>QR Kod topildi</h5>
+                                <div id="resultContent"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="errorResult" style="display: none;">
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <span id="errorMessage"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+                    <script>
+let scannerActive = false;
+
+function startScan() {
+    const video = document.createElement('video');
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(function(stream) {
+            video.srcObject = stream;
+            video.play();
+            
+            const scanInterval = setInterval(function() {
+                if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                    canvas.height = video.videoHeight;
+                    canvas.width = video.videoWidth;
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, imageData.width, imageData.height);
+                    
+                    if (code) {
+                        clearInterval(scanInterval);
+                        stream.getTracks().forEach(track => track.stop());
+                        processQRCode(code.data);
+                    }
+                }
+            }, 500);
+        })
+        .catch(function(err) {
+            showError('Kamera ochishda xatolik: ' + err.message);
+        });
+}
+
+function uploadQRCode(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                context.drawImage(img, 0, 0);
+                
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height);
+                
+                if (code) {
+                    processQRCode(code.data);
+                } else {
+                    showError('QR kod topilmadi. Iltimos, aniq rasm yuklang.');
+                }
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function processQRCode(qrData) {
+    try {
+        const data = JSON.parse(qrData);
+        showResult(data);
+    } catch (e) {
+        showError('Noto\'g\'ri QR kod formati');
+    }
+}
+
+function showResult(data) {
+    const resultDiv = document.getElementById('scanResult');
+    const errorDiv = document.getElementById('errorResult');
+    const contentDiv = document.getElementById('resultContent');
+    
+    errorDiv.style.display = 'none';
+    resultDiv.style.display = 'block';
+    
+    contentDiv.innerHTML = `
+        <div class="table-responsive">
+            <table class="table table-borderless">
+                <tr><td><strong>Buyurtma raqami:</strong></td><td>${data.buyurtma_raqami || 'N/A'}</td></tr>
+                <tr><td><strong>Ism:</strong></td><td>${data.ism || 'N/A'} ${data.familiya || ''}</td></tr>
+                <tr><td><strong>Telefon:</strong></td><td>${data.telefon || 'N/A'}</td></tr>
+                <tr><td><strong>To'lov turi:</strong></td><td>${data.tolov_turi || 'N/A'}</td></tr>
+                <tr><td><strong>Jami:</strong></td><td class="text-primary fw-bold">${data.jami || '0'} so'm</td></tr>
+                <tr><td><strong>Manzil:</strong></td><td>${data.manzil || 'N/A'}</td></tr>
+            </table>
+        </div>
+        <div class="mt-3">
+            <h6 class="fw-bold">Mahsulotlar:</h6>
+            <ul class="list-unstyled">
+                ${data.mahsulotlar ? data.mahsulotlar.map(item => `
+                    <li class="mb-2 pb-2 border-bottom">
+                        <strong>${item.nom}</strong><br>
+                        <small class="text-muted">${item.miqdor} x ${item.narx} so'm = <span class="fw-bold">${item.jami} so'm</span></small>
+                    </li>
+                `).join('') : '<li>Mahsulotlar topilmadi</li>'}
+            </ul>
+        </div>
+        <div class="d-grid gap-2 mt-3">
+            <button class="btn btn-success btn-lg" onclick="tasdiqlash('${JSON.stringify(data).replace(/'/g, "\\'")}')">
+                <i class="fas fa-check me-2"></i>Tasdiqlash va topshirish
+            </button>
+        </div>
+    `;
+}
+
+function tasdiqlash(qrDataString) {
+    const data = JSON.parse(qrDataString);
+    
+    fetch('{% url 'admin_qr_tasdiqlash' %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify({ qr_data: data }),
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            alert('Buyurtma tasdiqlandi!\n\nBuyurtma: ' + result.buyurtma_raqami + '\nMijoz: ' + result.ism + ' ' + result.familiya + '\nJami: ' + result.jami + ' so\'m');
+            location.reload();
+        } else {
+            showError(result.error);
+        }
+    })
+    .catch(err => {
+        showError('Xatolik: ' + err.message);
+    });
+}
+
+function showError(message) {
+    const resultDiv = document.getElementById('scanResult');
+    const errorDiv = document.getElementById('errorResult');
+    const errorMsg = document.getElementById('errorMessage');
+    
+    resultDiv.style.display = 'none';
+    errorDiv.style.display = 'block';
+    errorMsg.textContent = message;
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

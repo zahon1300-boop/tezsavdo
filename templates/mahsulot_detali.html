@@ -1,0 +1,356 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ mahsulot.nom }} - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Bosh sahifa</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'mahsulotlar' %}">Mahsulotlar</a></li>
+            <li class="breadcrumb-item active">{{ mahsulot.nom }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4 mb-5">
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm">
+                {% if default_variant and default_variant.image %}
+                <img src="{{ default_variant.image.url }}" class="card-img-top" alt="{{ mahsulot.nom }}" id="mainImage" style="height: 450px; object-fit: cover; border-radius: var(--radius-lg);">
+                {% elif mahsulot.rasmlar.first %}
+                <img src="{{ mahsulot.rasmlar.first.rasm.url }}" class="card-img-top" alt="{{ mahsulot.nom }}" id="mainImage" style="height: 450px; object-fit: cover; border-radius: var(--radius-lg);">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 450px; border-radius: var(--radius-lg);">
+                    <i class="fas fa-image fa-4x text-muted"></i>
+                </div>
+                {% endif %}
+                
+                {% if mahsulot.rasmlar.all or default_variant.rasmlar.all %}
+                <div class="card-body">
+                    <div class="row g-2">
+                        {% if mahsulot.rasmlar.all %}
+                            {% for rasm in mahsulot.rasmlar.all %}
+                            <div class="col-3">
+                                <img src="{{ rasm.rasm.url }}" class="img-thumbnail w-100" alt="{{ mahsulot.nom }}" onclick="document.getElementById('mainImage').src='{{ rasm.rasm.url }}'" style="height: 80px; object-fit: cover; border-radius: var(--radius); cursor: pointer;">
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                        {% if default_variant and default_variant.rasmlar.all %}
+                            {% for rasm in default_variant.rasmlar.all %}
+                            <div class="col-3">
+                                <img src="{{ rasm.rasm.url }}" class="img-thumbnail w-100" alt="{{ mahsulot.nom }}" onclick="document.getElementById('mainImage').src='{{ rasm.rasm.url }}'" style="height: 80px; object-fit: cover; border-radius: var(--radius); cursor: pointer;">
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="col-lg-7">
+            <div class="ps-lg-3">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    {% if mahsulot.yangi %}
+                    <span class="badge bg-success">Yangi</span>
+                    {% endif %}
+                    {% if mahsulot.oxirgi %}
+                    <span class="badge bg-warning text-dark">Oxirgi dona</span>
+                    {% endif %}
+                    {% if mahsulot.tavsiya_etilgan %}
+                    <span class="badge bg-info">Tavsiya etilgan</span>
+                    {% endif %}
+                </div>
+
+                {% if mahsulot.brend %}
+                <p class="text-muted mb-1">{{ mahsulot.brend.nom }}</p>
+                {% endif %}
+                
+                <h2 class="fw-bold mb-3">{{ mahsulot.nom }}</h2>
+
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="rating">
+                        {% for i in "12345" %}
+                        {% if forloop.counter <= ortacha_reyting %}
+                        <i class="fas fa-star text-warning"></i>
+                        {% else %}
+                        <i class="far fa-star text-muted"></i>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    <span class="text-muted">({{ fikrlar.count }} ta fikr)</span>
+                </div>
+
+                <div class="mb-4">
+                    <div class="d-flex align-items-baseline gap-3 flex-wrap">
+                        <span class="h2 text-primary fw-bold" id="variantPrice">
+                            {% if default_variant %}
+                                {{ default_variant.narx|floatformat:0 }} so'm
+                            {% else %}
+                                {{ mahsulot.narx|floatformat:0 }} so'm
+                            {% endif %}
+                        </span>
+                        <span class="h5 text-muted text-decoration-line-through d-none" id="variantOldPrice">
+                            {% if default_variant and default_variant.eski_narx %}
+                                {{ default_variant.eski_narx|floatformat:0 }} so'm
+                            {% endif %}
+                        </span>
+                        <span class="badge bg-danger fs-6 d-none" id="variantDiscount">
+                            {% if default_variant %}
+                                -{{ default_variant.chegirma_foiz }}%
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                {% if variant_options %}
+                {% for opt_key, opt_data in variant_options.items %}
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{{ opt_data.name }}:</label>
+                    <div class="option-group d-flex flex-wrap gap-2" data-option-key="{{ opt_key }}">
+                        {% for val in opt_data.values %}
+                        {% if opt_data.type == 'color' %}
+                        <button type="button" class="option-btn color-swatch-btn {% if opt_data.values|length == 1 %}active{% endif %}" 
+                                data-value-id="{{ val.id }}" 
+                                {% if not val.variants.0.available %}disabled{% endif %}
+                                aria-label="{{ val.name }}"
+                                title="{{ val.name }}">
+                            <span class="color-swatch" style="background-color: {{ val.color_code|default:'#ccc' }};"></span>
+                            <span class="ms-1">{{ val.name }}</span>
+                        </button>
+                        {% else %}
+                        <button type="button" class="option-btn btn btn-outline-secondary {% if opt_data.values|length == 1 %}active{% endif %}" 
+                                data-value-id="{{ val.id }}"
+                                {% if not val.variants.0.available %}disabled{% endif %}
+                                aria-label="{{ val.name }}">
+                            {{ val.name }}
+                        </button>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="fw-bold">SKU:</span>
+                    <span id="variantSku" class="text-muted">{{ default_variant.sku|default:"N/A" }}</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="fw-bold">Stock:</span>
+                    <span id="variantStock" class="{% if default_variant and default_variant.soni > 0 %}text-success{% else %}text-danger{% endif %}">
+                        {% if default_variant %}
+                            {{ default_variant.soni }} dona
+                        {% else %}
+                            {{ mahsulot.soni }} dona
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div class="quantity-control d-flex align-items-center border rounded-pill overflow-hidden">
+                        <button type="button" class="btn btn-link text-decoration-none px-3 py-2" onclick="updateQuantity(-1)">-</button>
+                        <input type="number" id="quantity" value="1" min="1" max="{% if default_variant %}{{ default_variant.soni }}{% else %}{{ mahsulot.soni }}{% endif %}" class="border-0 text-center w-25" readonly>
+                        <button type="button" class="btn btn-link text-decoration-none px-3 py-2" onclick="updateQuantity(1)">+</button>
+                    </div>
+                    <button class="btn btn-primary btn-lg flex-grow-1" id="addToCartBtn" {% if not default_variant or default_variant.soni == 0 %}disabled{% endif %}>
+                        <i class="fas fa-cart-plus me-2"></i> Savatchaga qo'shish
+                    </button>
+                </div>
+
+                <div class="d-flex gap-2">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'istakga_qoshish' mahsulot.id %}" class="btn btn-outline-danger">
+                            <i class="fas fa-heart me-2"></i> Istaklar
+                        </a>
+                    {% else %}
+                        <a href="{% url 'kirish' %}" class="btn btn-outline-danger">
+                            <i class="fas fa-heart me-2"></i> Istaklar
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h3 class="mb-0"><i class="fas fa-info-circle me-2 text-primary"></i>Tavsif</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-0">{{ mahsulot.tavsif|linebreaks|default:"Tavsif mavjud emas" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if bog_liq_mahsulotlar %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="section-header mb-4">
+                <h3>O'xshash mahsulotlar</h3>
+            </div>
+            <div class="row g-4">
+                {% for bog in bog_liq_mahsulotlar %}
+                <div class="col-6 col-md-4 col-lg-3 mb-4">
+                    <div class="card h-100 product-card hover-lift">
+                        {% if bog.rasmlar.first %}
+                        <img src="{{ bog.rasmlar.first.rasm.url }}" class="card-img-top" alt="{{ bog.nom }}" style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body">
+                            <h6 class="card-title">{{ bog.nom|truncatechars:50 }}</h6>
+                            <span class="current-price">{{ bog.narx|floatformat:0 }} so'm</span>
+                        </div>
+                        <div class="card-footer bg-white border-0 pt-0">
+                            <a href="{{ bog.get_absolute_url }}" class="btn btn-primary w-100">Ko'rish</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const productData = {
+    id: {{ mahsulot.id }},
+    defaultVariantId: {{ default_variant.id|default:'null' }},
+    csrfToken: '{{ csrf_token }}',
+    addToCartUrl: '{% url "savatcha_qoshish" %}',
+    variantInfoUrl: '{% url "variant_info" mahsulot.id %}'
+};
+
+let selectedVariantId = productData.defaultVariantId;
+
+function updateVariant() {
+    const optionIds = Object.values(selectedOptions);
+    if (!optionIds.length) return;
+    
+    fetch(productData.variantInfoUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': productData.csrfToken,
+        },
+        body: JSON.stringify({ options: optionIds })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (!data.success) return;
+        
+        selectedVariantId = data.variant.id;
+        const v = data.variant;
+        
+        document.getElementById('variantPrice').textContent = v.price.toLocaleString('uz-UZ') + " so'm";
+        
+        const oldPriceEl = document.getElementById('variantOldPrice');
+        if (v.old_price) {
+            oldPriceEl.textContent = v.old_price.toLocaleString('uz-UZ') + " so'm";
+            oldPriceEl.classList.remove('d-none');
+        } else {
+            oldPriceEl.classList.add('d-none');
+        }
+        
+        const discountEl = document.getElementById('variantDiscount');
+        if (v.discount > 0) {
+            discountEl.textContent = '-' + v.discount + '%';
+            discountEl.classList.remove('d-none');
+        } else {
+            discountEl.classList.add('d-none');
+        }
+        
+        document.getElementById('variantStock').textContent = v.stock + " dona";
+        document.getElementById('variantSku').textContent = v.sku;
+        
+        if (v.image) {
+            document.getElementById('mainImage').src = v.image;
+        }
+        
+        const addBtn = document.getElementById('addToCartBtn');
+        if (v.stock > 0 && v.available) {
+            addBtn.disabled = false;
+            addBtn.innerHTML = '<i class="fas fa-cart-plus me-2"></i> Savatchaga q\'shish';
+        } else {
+            addBtn.disabled = true;
+            addBtn.innerHTML = '<i class="fas fa-times me-2"></i> Tugagan';
+        }
+        
+        const qtyInput = document.getElementById('quantity');
+        qtyInput.max = v.stock;
+        if (parseInt(qtyInput.value) > v.stock) {
+            qtyInput.value = Math.max(1, v.stock);
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    let selectedOptions = {};
+    
+    document.querySelectorAll('.option-group').forEach(group => {
+        const optionKey = group.dataset.optionKey;
+        
+        group.querySelectorAll('.option-btn').forEach(btn => {
+            const valueId = btn.dataset.valueId;
+            if (!valueId) return;
+            
+            btn.addEventListener('click', function() {
+                if (this.disabled) return;
+                
+                group.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedOptions[optionKey] = parseInt(valueId);
+                updateVariant();
+            });
+        });
+    });
+    
+    const addBtn = document.getElementById('addToCartBtn');
+    if (addBtn) {
+        addBtn.addEventListener('click', function() {
+            const quantity = document.getElementById('quantity').value;
+            const variantId = selectedVariantId || productData.defaultVariantId;
+            
+            fetch(productData.addToCartUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': productData.csrfToken,
+                },
+                body: JSON.stringify({
+                    mahsulot_id: productData.id,
+                    variant_id: variantId,
+                    miqdor: parseInt(quantity)
+                }),
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Mahsulot savatchaga qo\'shildi!');
+                } else {
+                    alert('Xatolik: ' + data.error);
+                }
+            })
+            .catch(err => {
+                alert('Xatolik yuz berdi');
+                console.error(err);
+            });
+        });
+    }
+});
+
+function updateQuantity(delta) {
+    const input = document.getElementById('quantity');
+    const newVal = parseInt(input.value) + delta;
+    const max = parseInt(input.max);
+    input.value = Math.min(Math.max(1, newVal), max);
+}
+</script>
+{% endblock %}

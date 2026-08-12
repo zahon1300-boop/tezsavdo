@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Buyurtma berish - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+    <h2 class="fw-bold mb-3" style="font-size: 1.4rem;">Buyurtma berish</h2>
+    <div class="row g-3">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0" style="font-size: 1.1rem;"><i class="fas fa-truck me-2 text-primary"></i>Yetkazish ma'lumotlari</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="checkoutForm">
+                        {% csrf_token %}
+                        {% if user.is_authenticated %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold" style="font-size: 0.8rem;">Saqlangan manzil</label>
+                            <select name="manzil_id" class="form-select checkout-input">
+                                <option value="">Yangi manzil</option>
+                                {% for manzil in user.manzillar.all %}
+                                <option value="{{ manzil.id }}">{{ manzil.ism }} {{ manzil.familiya }} - {{ manzil.viloyat }}, {{ manzil.raion }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <label class="form-label checkout-input-label">Ism</label>
+                                {{ form.ism }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label checkout-input-label">Familiya</label>
+                                {{ form.familiya }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label checkout-input-label">Telefon</label>
+                                {{ form.telefon }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label checkout-input-label">Email (ixtiyoriy)</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label checkout-input-label">Viloyat</label>
+                                <select name="viloyat" class="form-select checkout-input" id="viloyatSelect">
+                                    <option value="">Viloyatni tanlang</option>
+                                    {% for viloyat in viloyatlar %}
+                                    <option value="{{ viloyat }}">{{ viloyat }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label checkout-input-label">Tuman</label>
+                                <input type="text" name="raion" class="form-control checkout-input" value="{{ form.raion.value|default:'' }}" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label checkout-input-label">Manzil</label>
+                                {{ form.manzil }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label checkout-input-label">Binolar</label>
+                                {{ form.binolar }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label checkout-input-label">Kvartira</label>
+                                {{ form.kvartira }}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label checkout-input-label">Tolov turi</label>
+                                {{ form.tolov_turi }}
+                            </div>
+                            <div class="col-12" id="demoKartaSection" style="display: none;">
+                                <label class="form-label fw-bold" style="font-size: 0.8rem;">Demo karta tanlang</label>
+                                <select name="demo_karta" class="form-select checkout-input">
+                                    <option value="">Karta tanlang</option>
+                                    {% for karta in demo_kartalar %}
+                                    <option value="{{ karta.id }}">
+                                        {{ karta.nom }} ({{ karta.get_tur_display }}) - {{ karta.karta_raqami }} - Balans: {{ karta.balans }} so'm
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="text-muted" style="font-size: 0.8rem;">Demo karta orqali to'lov qiling. Admin tomonidan yaratilgan test kartalardan foydalaning.</small>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label checkout-input-label">Izoh</label>
+                                {{ form.izoh }}
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mt-3" style="padding: 0.75rem; font-size: 1rem;">
+                            Buyurtmani yuborish <i class="fas fa-paper-plane ms-2"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="checkout-summary" style="padding: 1.25rem; margin-top: 0;">
+                <h5 style="font-size: 1.1rem; margin-bottom: 1rem;"><i class="fas fa-receipt me-2"></i>Buyurtma xulosasi</h5>
+                {% for item in savatcha.mahsulotlar.all %}
+                <div class="d-flex justify-content-between mb-2">
+                    <div>
+                        <small style="font-size: 0.85rem;">{{ item.mahsulot.nom|truncatechars:30 }} x{{ item.miqdor }}</small>
+                        {% if item.variant %}
+                        <br><small class="text-muted">
+                            {% for vo in item.variant.variant_ops.all %}
+                                {{ vo.option_value.nom }}{% if not forloop.last %} / {% endif %}
+                            {% endfor %}
+                        </small>
+                        {% endif %}
+                    </div>
+                    <span class="fw-bold" style="font-size: 0.9rem;">{{ item.jami|floatformat:0 }} so'm</span>
+                </div>
+                {% endfor %}
+                <hr style="margin: 1rem 0;">
+                <div class="summary-row total d-flex justify-content-between align-items-center">
+                    <span style="font-weight: 700; font-size: 1rem;">Jami:</span>
+                    <span class="text-primary" style="font-weight: 700; font-size: 1.1rem;">{{ savatcha.jami }} so'm</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tolovTuri = document.querySelector('select[name="tolov_turi"]');
+    const demoKartaSection = document.getElementById('demoKartaSection');
+
+    function toggleDemoKarta() {
+        if (tolovTuri.value === 'karta') {
+            demoKartaSection.style.display = 'block';
+        } else {
+            demoKartaSection.style.display = 'none';
+        }
+    }
+
+    if (tolovTuri) {
+        tolovTuri.addEventListener('change', toggleDemoKarta);
+        toggleDemoKarta();
+    }
+});
+</script>
+{% endblock %}

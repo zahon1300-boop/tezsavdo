@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Savatcha - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0"><i class="fas fa-shopping-cart me-2 text-primary"></i>Savatcha</h2>
+    </div>
+    {% if savatcha.mahsulotlar.all %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            {% for item in savatcha.mahsulotlar.all %}
+            <div class="card mb-3 border-0 shadow-sm cart-item">
+                <div class="row g-0">
+                    <div class="col-md-3">
+                        {% if item.mahsulot.rasmlar.first %}
+                        <img src="{{ item.mahsulot.rasmlar.first.rasm.url }}" class="img-fluid h-100" style="object-fit: cover; min-height: 150px;" alt="{{ item.mahsulot.nom }}">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-9">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div class="flex-grow-1">
+                                    <h5 class="card-title fw-bold">{{ item.mahsulot.nom }}</h5>
+                                    {% if item.variant %}
+                                    <p class="text-muted small">
+                                        {% for vo in item.variant.variant_ops.all %}
+                                            {{ vo.option_value.nom }}{% if not forloop.last %} / {% endif %}
+                                        {% endfor %}
+                                    </p>
+                                    <p class="text-muted small">SKU: {{ item.variant.sku }}</p>
+                                    {% endif %}
+                                    <p class="text-primary fw-bold fs-5">{{ item.unit_price|floatformat:0 }} so'm</p>
+                                    {% if item.miqdor > 1 %}
+                                    <p class="text-muted small">Jami: {{ item.jami|floatformat:0 }} so'm</p>
+                                    {% endif %}
+                                </div>
+                                <div class="d-flex flex-column align-items-end gap-2">
+                                    <button class="btn btn-sm btn-outline-danger" onclick="savatchadanOlibTashlash({{ item.id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between mt-3">
+                                <div class="quantity-control">
+                                    <button type="button" onclick="miqdorYangilash({{ item.id }}, {{ item.miqdor|add:'-1' }})">-</button>
+                                    <input type="text" value="{{ item.miqdor }}" readonly>
+                                    <button type="button" onclick="miqdorYangilash({{ item.id }}, {{ item.miqdor|add:'1' }})">+</button>
+                                </div>
+                                <span class="fw-bold">{{ item.jami }} so'm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <button class="btn btn-outline-danger w-100" onclick="savatchaniTozalash()">
+                <i class="fas fa-trash-alt me-2"></i> Savatchani tozalash
+            </button>
+        </div>
+        <div class="col-lg-4">
+            <div class="checkout-summary">
+                <h5><i class="fas fa-receipt me-2"></i>Buyurtma xulosasi</h5>
+                <div class="summary-row">
+                    <span>Mahsulotlar ({{ savatcha.soni }} ta):</span>
+                    <span class="fw-bold">{{ savatcha.jami }} so'm</span>
+                </div>
+                <div class="summary-row">
+                    <span>Yetkazish:</span>
+                    <span>Hisoblanadi</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Jami:</span>
+                    <span>{{ savatcha.jami }} so'm</span>
+                </div>
+                <a href="{% url 'checkout' %}" class="btn btn-primary w-100 btn-lg">
+                    Buyurtma berish <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-shopping-cart"></i>
+        <h3>Savatchangiz bo'sh</h3>
+        <p class="text-muted">Hozircha hech narsa qo'shmagansiz</p>
+        <a href="{% url 'mahsulotlar' %}" class="btn btn-primary btn-lg">Xarid qilishni boshlash</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function miqdorYangilash(itemId, miqdor) {
+    fetch('/savatcha/' + itemId + '/miqdor/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify({ miqdor: miqdor }),
+    }).then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              location.reload();
+          } else {
+              alert('Xatolik: ' + data.error);
+          }
+      });
+}
+
+function savatchadanOlibTashlash(itemId) {
+    fetch('/savatcha/' + itemId + '/olib-tashlash/', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+    }).then(() => location.reload());
+}
+
+function savatchaniTozalash() {
+    if (confirm('Savatchani tozalashni xohlaysizmi?')) {
+        fetch('/savatcha/tozalash/', {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCookie('csrftoken') },
+        }).then(() => location.reload());
+    }
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

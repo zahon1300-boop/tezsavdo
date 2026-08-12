@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Chek #{{ buyurtma.buyurtma_raqami }} - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-5 text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle fa-4x text-success"></i>
+                    </div>
+                    <h2 class="fw-bold mb-3">Buyurtma qabul qilindi!</h2>
+                    <p class="text-muted mb-4">Buyurtma raqami: <strong>{{ buyurtma.buyurtma_raqami }}</strong></p>
+
+                    {% if tolov and tolov.holat == 'tasdiqlandi' %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-credit-card me-2"></i>
+                        <strong>To'lov tasdiqlandi</strong>
+                        <p class="mb-0 mt-2">Demo karta orqali {{ buyurtma.jami }} so'm to'lov amalga oshirildi</p>
+                        {% if demo_karta %}
+                        <small class="text-muted">Karta: {{ demo_karta.nom }} ({{ demo_karta.karta_raqami }})</small>
+                        {% endif %}
+                    </div>
+                    {% elif tolov and tolov.holat == 'kutilmoqda' %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-clock me-2"></i>
+                        <strong>To'lov kutilmoqda</strong>
+                        <p class="mb-0 mt-2">Naqd to'lov bilan buyurtmangiz qabul qilindi. Yetkazish vaqtida to'lang.</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="card bg-light border-0 mb-4">
+                        <div class="card-body">
+                            <h5 class="fw-bold mb-3">Buyurtma tarkibi</h5>
+                            {% for item in buyurtma.mahsulotlar.all %}
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>{{ item.mahsulot.nom }} x{{ item.miqdor }}</span>
+                                <span class="fw-bold">{{ item.jami }} so'm</span>
+                            </div>
+                            {% endfor %}
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold">Jami:</span>
+                                <span class="fw-bold text-primary">{{ buyurtma.jami }} so'm</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a href="{% url 'mening_buyurtmalarim' %}" class="btn btn-primary">
+                            <i class="fas fa-box me-2"></i>Buyurtmalarim
+                        </a>
+                        <a href="{% url 'index' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-home me-2"></i>Bosh sahifa
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

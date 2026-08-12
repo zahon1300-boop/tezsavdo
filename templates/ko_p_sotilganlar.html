@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Eng ko'p sotilganlar - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Bosh sahifa</a></li>
+            <li class="breadcrumb-item active">Eng ko'p sotilganlar</li>
+        </ol>
+    </nav>
+
+    <h2 class="fw-bold mb-4">Eng ko'p sotilganlar</h2>
+
+    <div class="row g-4">
+        {% for product in mahsulotlar %}
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="product-card">
+                {% if product.sotish_soni > 100 %}
+                <span class="product-badge discount">Top sotuvchi</span>
+                {% endif %}
+                <div class="product-img">
+                    {% if product.rasmlar.first %}
+                    <img src="{{ product.rasmlar.first.rasm.url }}" alt="{{ product.nom }}" class="product-img">
+                    {% else %}
+                    <div class="product-img-placeholder">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="product-body">
+                    <h6 class="product-name">{{ product.nom|truncatechars:40 }}</h6>
+                    <div class="product-price">
+                        <span class="current-price">{{ product.narx }} so'm</span>
+                        {% if product.eski_narx %}
+                        <span class="old-price">{{ product.eski_narx }} so'm</span>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'product_detail' product.slug %}" class="btn btn-outline-primary btn-sm w-100 mt-2">Batafsil</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="empty-state">
+                <i class="fas fa-chart-bar"></i>
+                <h3>Ma'lumot yo'q</h3>
+                <p>Hozircha sotish statistikasi mavjud emas</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

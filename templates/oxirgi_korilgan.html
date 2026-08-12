@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Oxirgi ko'rilgan - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Bosh sahifa</a></li>
+            <li class="breadcrumb-item active">Oxirgi ko'rilgan</li>
+        </ol>
+    </nav>
+
+    <h2 class="fw-bold mb-4">Oxirgi ko'rilgan mahsulotlar</h2>
+
+    <div class="empty-state">
+        <i class="fas fa-history"></i>
+        <h3>Hozircha ko'rilgan mahsulotlar yo'q</h3>
+        <p>Mahsulotlarni ko'rishni boshlang, ular shu yerga qo'shiladi</p>
+        <a href="{% url 'mahsulotlar' %}" class="btn btn-primary">Mahsulotlarni ko'rish</a>
+    </div>
+</div>
+{% endblock %}

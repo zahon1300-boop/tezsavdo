@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}TezSavdo - Bosh sahifa{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container-fluid px-4 px-lg-5">
+        <div class="row align-items-center py-5">
+            <div class="col-lg-6">
+                <h1 class="fw-bold mb-4" style="font-size: 3.5rem; line-height: 1.1;">Tez yetkazish,<br>sifatli mahsulotlar</h1>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'mahsulotlar' %}" class="btn btn-light btn-lg px-4 py-3">
+                        Xarid qilishni boshlash <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="{% static 'images/hero.svg' %}" alt="Hero" class="img-fluid hero-img">
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if bannerlar %}
+<section class="banner-section py-4">
+    <div class="container">
+        <div class="swiper bannerSwiper">
+            <div class="swiper-wrapper">
+                {% for banner in bannerlar %}
+                <div class="swiper-slide">
+                    <div class="banner-card">
+                        {% if banner.rasm %}
+                        <img src="{{ banner.rasm.url }}" alt="{{ banner.nom }}" class="banner-img">
+                        {% endif %}
+                        <div class="banner-content">
+                            <h3>{{ banner.matn|default:banner.nom }}</h3>
+                            {% if banner.tugma_matni %}
+                            <a href="{{ banner.havola|default:'#' }}" class="btn btn-light">{{ banner.tugma_matni }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="categories-section py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title">Kategoriyalar</h2>
+            <a href="{% url 'mahsulotlar' %}" class="btn btn-outline-primary">Barchasini ko'rish</a>
+        </div>
+        <div class="category-scroll-wrapper">
+            <div class="category-scroll">
+                {% for kategoriya in kategoriyalar %}
+                <a href="{% url 'mahsulotlar' %}?kategoriya={{ kategoriya.id }}" class="category-card">
+                    <div class="category-icon-wrapper">
+                        {% if kategoriya.rasm %}
+                        <img src="{{ kategoriya.rasm.url }}" alt="{{ kategoriya.nom }}" class="category-icon">
+                        {% else %}
+                        <i class="fas fa-box category-icon"></i>
+                        {% endif %}
+                    </div>
+                    <span class="category-name">{{ kategoriya.nom }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if aktsiyalar %}
+<section class="deals-section py-5 bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Chegirmalar va Aksiyalar</h2>
+            <p class="section-subtitle">Maxsus takliflar va aksiyalar bilan tejang</p>
+        </div>
+        <div class="row g-4">
+            {% for aktsiya in aktsiyalar %}
+            <div class="col-md-4">
+                <div class="deal-card">
+                    <div class="deal-icon">
+                        <i class="fas fa-percent"></i>
+                    </div>
+                    <h3>{{ aktsiya.nom }}</h3>
+                    <p>{{ aktsiya.tavsif|truncatechars:120 }}</p>
+                    <span class="deal-badge">-{{ aktsiya.chegirma_foiz }}%</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="products-section py-5">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Yangi mahsulotlar</h2>
+            <p class="section-subtitle">Eng so'nggi va zamonaviy mahsulotlar</p>
+        </div>
+        <div class="row g-4">
+            {% for mahsulot in yangi_mahsulotlar %}
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="product-card">
+                    {% if mahsulot.eski_narx %}
+                    <span class="product-badge discount">-{{ mahsulot.chegirma_foiz }}%</span>
+                    {% endif %}
+                    {% if mahsulot.yangi %}
+                    <span class="product-badge new">Yangi</span>
+                    {% endif %}
+                    {% if mahsulot.rasmlar.first %}
+                    <img src="{{ mahsulot.rasmlar.first.rasm.url }}" alt="{{ mahsulot.nom }}" class="product-img">
+                    {% else %}
+                    <div class="product-img-placeholder">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    {% endif %}
+                    <div class="product-body">
+                        <h5 class="product-title">{{ mahsulot.nom }}</h5>
+                        <div class="product-price">
+                            <span class="current-price">{{ mahsulot.starting_price|floatformat:0 }} so'm</span>
+                            {% if mahsulot.eski_narx %}
+                            <span class="old-price">{{ mahsulot.eski_narx|floatformat:0 }} so'm</span>
+                            {% endif %}
+                        </div>
+                        {% if mahsulot.has_variants %}
+                        <small class="text-muted">Variantlar mavjud</small>
+                        {% endif %}
+                        <a href="{{ mahsulot.get_absolute_url }}" class="btn btn-primary w-100 mt-2">Ko'rish</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="products-section py-5 bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Mashhur mahsulotlar</h2>
+            <p class="section-subtitle">Eng ko'p sotilgan va mashhur mahsulotlar</p>
+        </div>
+        <div class="row g-4">
+            {% for mahsulot in mashhur_mahsulotlar %}
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="product-card">
+                    {% if mahsulot.eski_narx %}
+                    <span class="product-badge discount">-{{ mahsulot.chegirma_foiz }}%</span>
+                    {% endif %}
+                    {% if mahsulot.rasmlar.first %}
+                    <img src="{{ mahsulot.rasmlar.first.rasm.url }}" alt="{{ mahsulot.nom }}" class="product-img">
+                    {% else %}
+                    <div class="product-img-placeholder">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    {% endif %}
+                    <div class="product-body">
+                        <h5 class="product-title">{{ mahsulot.nom }}</h5>
+                        <div class="product-price">
+                            <span class="current-price">{{ mahsulot.starting_price|floatformat:0 }} so'm</span>
+                            {% if mahsulot.eski_narx %}
+                            <span class="old-price">{{ mahsulot.eski_narx|floatformat:0 }} so'm</span>
+                            {% endif %}
+                        </div>
+                        {% if mahsulot.has_variants %}
+                        <small class="text-muted">Variantlar mavjud</small>
+                        {% endif %}
+                        <a href="{{ mahsulot.get_absolute_url }}" class="btn btn-primary w-100 mt-2">Ko'rish</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="products-section py-5">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Oxirgi mahsulotlar</h2>
+            <p class="section-subtitle">Yangi qo'shilgan mahsulotlar</p>
+        </div>
+        <div class="row g-4">
+            {% for mahsulot in oxirgi_mahsulotlar %}
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="product-card">
+                    {% if mahsulot.eski_narx %}
+                    <span class="product-badge discount">-{{ mahsulot.chegirma_foiz }}%</span>
+                    {% endif %}
+                    {% if mahsulot.oxirgi %}
+                    <span class="product-badge last">Oxirgi dona</span>
+                    {% endif %}
+                    {% if mahsulot.rasmlar.first %}
+                    <img src="{{ mahsulot.rasmlar.first.rasm.url }}" alt="{{ mahsulot.nom }}" class="product-img">
+                    {% else %}
+                    <div class="product-img-placeholder">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    {% endif %}
+                    <div class="product-body">
+                        <h5 class="product-title">{{ mahsulot.nom }}</h5>
+                        <div class="product-price">
+                            <span class="current-price">{{ mahsulot.starting_price|floatformat:0 }} so'm</span>
+                            {% if mahsulot.eski_narx %}
+                            <span class="old-price">{{ mahsulot.eski_narx|floatformat:0 }} so'm</span>
+                            {% endif %}
+                        </div>
+                        {% if mahsulot.has_variants %}
+                        <small class="text-muted">Variantlar mavjud</small>
+                        {% endif %}
+                        <a href="{{ mahsulot.get_absolute_url }}" class="btn btn-primary w-100 mt-2">Ko'rish</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    new Swiper('.bannerSwiper', {
+        loop: true,
+        effect: 'coverflow',
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: 'auto',
+        coverflowEffect: {
+            rotate: 50,
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: true,
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+        },
+    });
+});
+</script>
+{% endblock %}

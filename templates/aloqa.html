@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Aloqa - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Bosh sahifa</a></li>
+            <li class="breadcrumb-item active">Aloqa</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="contact-info-card text-center p-4 h-100">
+                <div class="contact-icon mb-3">
+                    <i class="fas fa-phone-alt"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Telefon</h5>
+                <p class="text-muted small mb-0">+998 95 572 13 91</p>
+                <p class="text-muted small">Dushanba - Juma: 09:00 - 20:00</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="contact-info-card text-center p-4 h-100">
+                <div class="contact-icon mb-3">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Elektron pochta</h5>
+                <p class="text-muted small mb-0">info@tezsavdo.uz</p>
+                <p class="text-muted small">24 soat ichida javob beramiz</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="contact-info-card text-center p-4 h-100">
+                <div class="contact-icon mb-3">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Manzil</h5>
+                <p class="text-muted small mb-0">Buxoro viloyati, Vobkent tumani</p>
+                <p class="text-muted small">Kolxatib MFY, 41-uy</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4">Xabar yuborish</h4>
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Ism</label>
+                            <input type="text" class="form-control" placeholder="Ismingizni kiriting">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Telefon</label>
+                            <input type="tel" class="form-control" placeholder="+998 90 123 45 67">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mavzu</label>
+                            <select class="form-select">
+                                <option value="">Mavzuni tanlang</option>
+                                <option>Buyurtma bo'yicha</option>
+                                <option>Mahsulotlar</option>
+                                <option>To'lov</option>
+                                <option>Boshqa</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Xabar</label>
+                            <textarea class="form-control" rows="4" placeholder="Xabaringizni yozing..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            <i class="fas fa-paper-plane me-2"></i>Yuborish
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-0">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12345!2d64.4!3d39.8!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDU0JzAwLjAiTiA2NMKwMjYnMDAuMCJF!5e0!3m2!1sru!2s!4v1234567890" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

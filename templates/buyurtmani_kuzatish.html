@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Buyurtmani kuzatish - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Bosh sahifa</a></li>
+            <li class="breadcrumb-item active">Buyurtmani kuzatish</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label">Buyurtma raqami</label>
+                            <input type="text" class="form-control" placeholder="Masalan: TS-2024-001234" value="TS-2024-001234">
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button class="btn btn-primary w-100 py-2">
+                                <i class="fas fa-search me-2"></i>Kuzatish
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold mb-0">Buyurtma ma'lumotlari</h5>
+                        <span class="badge bg-primary py-2 px-3">TS-2024-001234</span>
+                    </div>
+
+                    <div class="tracking-timeline">
+                        <div class="tracking-step completed">
+                            <div class="step-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="step-content">
+                                <h6 class="fw-bold mb-1">Buyurtma qabul qilindi</h6>
+                                <p class="text-muted small mb-0">2024-01-15 14:30</p>
+                            </div>
+                        </div>
+                        <div class="tracking-step completed">
+                            <div class="step-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="step-content">
+                                <h6 class="fw-bold mb-1">To'lov amalga oshirildi</h6>
+                                <p class="text-muted small mb-0">2024-01-15 14:35</p>
+                            </div>
+                        </div>
+                        <div class="tracking-step active">
+                            <div class="step-icon">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="step-content">
+                                <h6 class="fw-bold mb-1">Yetkazish jarayonida</h6>
+                                <p class="text-muted small mb-0">2024-01-16 09:00 - Buxoro filiali</p>
+                            </div>
+                        </div>
+                        <div class="tracking-step">
+                            <div class="step-icon">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div class="step-content">
+                                <h6 class="fw-bold mb-1">Yetkazib berildi</h6>
+                                <p class="text-muted small mb-0">Kutilmoqda...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

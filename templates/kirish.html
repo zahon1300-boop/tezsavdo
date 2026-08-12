@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Kirish - TezSavdo{% endblock %}
+
+{% block header %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-shapes">
+        <div class="auth-shape"></div>
+        <div class="auth-shape"></div>
+        <div class="auth-shape"></div>
+    </div>
+    
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1 class="auth-logo">TezSavdo</h1>
+            <h2 class="auth-title">Tizimga kirish</h2>
+            <p class="auth-subtitle">Hisobingizga kiring va xarid qiling</p>
+        </div>
+        
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+            <div class="mb-2">
+                <label class="form-label">Foydalanuvchi nomi</label>
+                {{ form.username }}
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Parol</label>
+                {{ form.password }}
+            </div>
+            <div class="mb-3 form-check">
+                {{ form.eslab_qol }}
+                <label class="form-check-label">Eslab qolish</label>
+            </div>
+            <button type="submit" class="auth-btn">
+                <i class="fas fa-sign-in-alt me-2"></i>Kirish
+            </button>
+        </form>
+        
+        <div class="auth-footer">
+            <p class="mb-0">Hisobingiz yo'qmi? <a href="{% url 'royxatdan_otish' %}">Ro'yxatdan o'tish</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

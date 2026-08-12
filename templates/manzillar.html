@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manzillar - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="fw-bold mb-4"><i class="fas fa-map-marker-alt me-2 text-primary"></i>Manzillarim</h2>
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="fas fa-plus-circle me-2 text-primary"></i>Yangi manzil qo'shish</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                        {% endif %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Ism</label>
+                            {{ form.ism }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Familiya</label>
+                            {{ form.familiya }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Telefon</label>
+                            {{ form.telefon }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Viloyat</label>
+                            {{ form.viloyat }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tuman</label>
+                            {{ form.raion }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Manzil</label>
+                            {{ form.manzil }}
+                        </div>
+                        <div class="mb-3 form-check">
+                            {{ form.asosiy }}
+                            <label class="form-check-label fw-bold">Asosiy manzil</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Qo'shish</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            {% if manzillar %}
+            {% for manzil in manzillar %}
+            <div class="card mb-3 border-0 shadow-sm">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title fw-bold mb-1">{{ manzil.ism }} {{ manzil.familiya }}</h5>
+                        <p class="card-text text-muted mb-1">{{ manzil.viloyat }}, {{ manzil.raion }}, {{ manzil.manzil }}</p>
+                        {% if manzil.asosiy %}
+                        <span class="badge bg-primary">Asosiy</span>
+                        {% endif %}
+                    </div>
+                    <form method="post" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="delete" value="{{ manzil.id }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-map-marker-alt"></i>
+                <h3>Manzillar yo'q</h3>
+                <p class="text-muted">Birinchi manzilingizni qo'shing</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

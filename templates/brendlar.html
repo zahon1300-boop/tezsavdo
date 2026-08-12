@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Brendlar - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Bosh sahifa</a></li>
+            <li class="breadcrumb-item active">Brendlar</li>
+        </ol>
+    </nav>
+
+    <h2 class="fw-bold mb-4">Brendlar</h2>
+
+    <div class="row g-4">
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <a href="{% url 'mahsulotlar' %}?brend=1" class="brand-card">
+                <div class="brand-logo">
+                    <i class="fas fa-apple-alt"></i>
+                </div>
+                <h6 class="brand-name mb-0">Apple</h6>
+            </a>
+        </div>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <a href="{% url 'mahsulotlar' %}?brend=2" class="brand-card">
+                <div class="brand-logo">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h6 class="brand-name mb-0">Samsung</h6>
+            </a>
+        </div>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <a href="{% url 'mahsulotlar' %}?brend=3" class="brand-card">
+                <div class="brand-logo">
+                    <i class="fas fa-headphones"></i>
+                </div>
+                <h6 class="brand-name mb-0">Sony</h6>
+            </a>
+        </div>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <a href="{% url 'mahsulotlar' %}?brend=4" class="brand-card">
+                <div class="brand-logo">
+                    <i class="fas fa-laptop"></i>
+                </div>
+                <h6 class="brand-name mb-0">HP</h6>
+            </a>
+        </div>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <a href="{% url 'mahsulotlar' %}?brend=5" class="brand-card">
+                <div class="brand-logo">
+                    <i class="fas fa-microchip"></i>
+                </div>
+                <h6 class="brand-name mb-0">Intel</h6>
+            </a>
+        </div>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <a href="{% url 'mahsulotlar' %}?brend=6" class="brand-card">
+                <div class="brand-logo">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+                <h6 class="brand-name mb-0">Xbox</h6>
+            </a>
+        </div>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <a href="{% url 'mahsulotlar' %}?brend=7" class="brand-card">
+                <div class="brand-logo">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h6 class="brand-name mb-0">Canon</h6>
+            </a>
+        </div>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <a href="{% url 'mahsulotlar' %}?brend=8" class="brand-card">
+                <div class="brand-logo">
+                    <i class="fas fa-watch"></i>
+                </div>
+                <h6 class="brand-name mb-0">Rolex</h6>
+            </a>
+        </div>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <a href="{% url 'mahsulotlar' %}?brend=9" class="brand-card">
+                <div class="brand-logo">
+                    <i class="fas fa-shoe-prints"></i>
+                </div>
+                <h6 class="brand-name mb-0">Nike</h6>
+            </a>
+        </div>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <a href="{% url 'mahsulotlar' %}?brend=10" class="brand-card">
+                <div class="brand-logo">
+                    <i class="fas fa-tshirt"></i>
+                </div>
+                <h6 class="brand-name mb-0">Adidas</h6>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

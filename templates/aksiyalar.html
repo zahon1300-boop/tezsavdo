@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Aksiyalar - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Bosh sahifa</a></li>
+            <li class="breadcrumb-item active">Aksiyalar</li>
+        </ol>
+    </nav>
+
+    <h2 class="fw-bold mb-4">Aksiyalar va chegirmalar</h2>
+
+    {% if aksiyalar %}
+    <div class="row g-4 mb-5">
+        {% for aktsiya in aksiyalar %}
+        <div class="col-lg-6">
+            <div class="sale-card">
+                <div class="sale-badge">-{{ aktsiya.chegirma_foiz }}%</div>
+                <div class="sale-content">
+                    <h3 class="fw-bold mb-2">{{ aktsiya.nom }}</h3>
+                    <p class="mb-3">{{ aktsiya.tavsif|truncatechars:120 }}</p>
+                    <a href="{% url 'mahsulotlar' %}" class="btn btn-light">Sotib olish <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <h4 class="fw-bold mb-4">Kategoriyalar bo'yicha chegirmalar</h4>
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+            <div class="action-card h-100">
+                <div class="action-card-img">
+                    <i class="fas fa-mobile-alt fa-3x text-primary"></i>
+                </div>
+                <div class="action-card-body">
+                    <h5 class="fw-bold">Smartfonlar</h5>
+                    <p class="text-muted small mb-2">Barcha smartfonlarga 25% chegirma</p>
+                    <span class="text-danger small"><i class="fas fa-clock me-1"></i>Qolgan vaqt: 3 kun</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="action-card h-100">
+                <div class="action-card-img">
+                    <i class="fas fa-laptop fa-3x text-success"></i>
+                </div>
+                <div class="action-card-body">
+                    <h5 class="fw-bold">Noutbuklar</h5>
+                    <p class="text-muted small mb-2">O'yin va ish noutbuklariga 20% chegirma</p>
+                    <span class="text-danger small"><i class="fas fa-clock me-1"></i>Qolgan vaqt: 5 kun</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="action-card h-100">
+                <div class="action-card-img">
+                    <i class="fas fa-tshirt fa-3x text-warning"></i>
+                </div>
+                <div class="action-card-body">
+                    <h5 class="fw-bold">Kiyimlar</h5>
+                    <p class="text-muted small mb-2">Yangi mavsum kiyimlari 40% chegirma</p>
+                    <span class="text-danger small"><i class="fas fa-clock me-1"></i>Qolgan vaqt: 7 kun</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profil - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row g-4">
+        <div class="col-lg-3">
+            <div class="profile-sidebar">
+                <div class="text-center">
+                    {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" class="profile-avatar" alt="{{ user.get_full_name }}">
+                    {% else %}
+                    <div class="profile-avatar bg-primary text-white d-flex align-items-center justify-content-center mx-auto" style="width: 100px; height: 100px; font-size: 2.5rem; border-radius: 50%;">
+                        {{ user.first_name|first|upper }}
+                    </div>
+                    {% endif %}
+                    <h5 class="fw-bold mt-3">{{ user.get_full_name }}</h5>
+                    <p class="text-muted small">{{ user.email }}</p>
+                </div>
+                <div class="list-group mt-4 profile-menu">
+                    <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action"><i class="fas fa-tachometer-alt me-2"></i> Boshqaruv paneli</a>
+                    <a href="{% url 'profil' %}" class="list-group-item list-group-item-action active"><i class="fas fa-user me-2"></i> Profil</a>
+                    <a href="{% url 'parol_ozgartirish' %}" class="list-group-item list-group-item-action"><i class="fas fa-key me-2"></i> Parolni o'zgartirish</a>
+                    <a href="{% url 'manzillar' %}" class="list-group-item list-group-item-action"><i class="fas fa-map-marker-alt me-2"></i> Manzillar</a>
+                    <a href="{% url 'mening_buyurtmalarim' %}" class="list-group-item list-group-item-action"><i class="fas fa-box me-2"></i> Buyurtmalarim</a>
+                    <a href="{% url 'sozlamalar' %}" class="list-group-item list-group-item-action"><i class="fas fa-cog me-2"></i> Sozlamalar</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="fas fa-user-edit me-2 text-primary"></i>Profil ma'lumotlari</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Ism</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Familiya</label>
+                                {{ form.last_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Email</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Telefon</label>
+                                {{ form.telefon }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Tug'ilgan sana</label>
+                                {{ form.tugilgan_sana }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Avatar</label>
+                                {{ form.avatar }}
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-4">Saqlash</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

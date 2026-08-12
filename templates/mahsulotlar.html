@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mahsulotlar - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-lg-none mb-3">
+        <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#mobileFilter">
+            <i class="fas fa-filter me-2"></i>Filterlar
+        </button>
+    </div>
+    <div class="collapse d-lg-none mb-3" id="mobileFilter">
+        <div class="filter-sidebar mb-3">
+            <div class="filter-header">
+                <h5><i class="fas fa-sliders-h me-2"></i>Filterlar</h5>
+            </div>
+            <div class="filter-body">
+                <form method="get" id="filterForm">
+                    <div class="filter-group">
+                        <label>Qidiruv</label>
+                        <input type="text" name="qidiruv" class="form-control" value="{{ request.GET.qidiruv }}" placeholder="Mahsulot nomi...">
+                    </div>
+                    <div class="filter-group">
+                        <label>Kategoriya</label>
+                        <select name="kategoriya" class="form-select">
+                            <option value="">Barchasi</option>
+                            {% for kategoriya in kategoriyalar %}
+                            <option value="{{ kategoriya.id }}" {% if request.GET.kategoriya == kategoriya.id|stringformat:'s' %}selected{% endif %}>{{ kategoriya.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Brend</label>
+                        <select name="brend" class="form-select">
+                            <option value="">Barchasi</option>
+                            {% for brend in brendlar %}
+                            <option value="{{ brend.id }}" {% if request.GET.brend == brend.id|stringformat:'s' %}selected{% endif %}>{{ brend.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Narx dan</label>
+                        <input type="number" name="narx_min" class="form-control" value="{{ request.GET.narx_min }}" placeholder="0">
+                    </div>
+                    <div class="filter-group">
+                        <label>Narx gacha</label>
+                        <input type="number" name="narx_max" class="form-control" value="{{ request.GET.narx_max }}" placeholder="999999999">
+                    </div>
+                    <div class="filter-group">
+                        <label>Reyting</label>
+                        <select name="reyting" class="form-select">
+                            <option value="">Barchasi</option>
+                            <option value="1" {% if request.GET.reyting == '1' %}selected{% endif %}>1 va undan yuqori</option>
+                            <option value="2" {% if request.GET.reyting == '2' %}selected{% endif %}>2 va undan yuqori</option>
+                            <option value="3" {% if request.GET.reyting == '3' %}selected{% endif %}>3 va undan yuqori</option>
+                            <option value="4" {% if request.GET.reyting == '4' %}selected{% endif %}>4 va undan yuqori</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mb-2">
+                        <i class="fas fa-search me-2"></i>Qidirish
+                    </button>
+                    <a href="{% url 'mahsulotlar' %}" class="btn btn-outline-secondary w-100">Tozalash</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row g-4">
+        <div class="col-lg-3 d-none d-lg-block">
+            <div class="filter-sidebar">
+                <div class="filter-header">
+                    <h5><i class="fas fa-sliders-h me-2"></i>Filterlar</h5>
+                </div>
+                <div class="filter-body">
+                    <form method="get" id="filterForm">
+                        <div class="filter-group">
+                            <label>Qidiruv</label>
+                            <input type="text" name="qidiruv" class="form-control" value="{{ request.GET.qidiruv }}" placeholder="Mahsulot nomi...">
+                        </div>
+                        <div class="filter-group">
+                            <label>Kategoriya</label>
+                            <select name="kategoriya" class="form-select">
+                                <option value="">Barchasi</option>
+                                {% for kategoriya in kategoriyalar %}
+                                <option value="{{ kategoriya.id }}" {% if request.GET.kategoriya == kategoriya.id|stringformat:'s' %}selected{% endif %}>{{ kategoriya.nom }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Brend</label>
+                            <select name="brend" class="form-select">
+                                <option value="">Barchasi</option>
+                                {% for brend in brendlar %}
+                                <option value="{{ brend.id }}" {% if request.GET.brend == brend.id|stringformat:'s' %}selected{% endif %}>{{ brend.nom }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Narx dan</label>
+                            <input type="number" name="narx_min" class="form-control" value="{{ request.GET.narx_min }}" placeholder="0">
+                        </div>
+                        <div class="filter-group">
+                            <label>Narx gacha</label>
+                            <input type="number" name="narx_max" class="form-control" value="{{ request.GET.narx_max }}" placeholder="999999999">
+                        </div>
+                        <div class="filter-group">
+                            <label>Reyting</label>
+                            <select name="reyting" class="form-select">
+                                <option value="">Barchasi</option>
+                                <option value="1" {% if request.GET.reyting == '1' %}selected{% endif %}>1 va undan yuqori</option>
+                                <option value="2" {% if request.GET.reyting == '2' %}selected{% endif %}>2 va undan yuqori</option>
+                                <option value="3" {% if request.GET.reyting == '3' %}selected{% endif %}>3 va undan yuqori</option>
+                                <option value="4" {% if request.GET.reyting == '4' %}selected{% endif %}>4 va undan yuqori</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mb-2">
+                            <i class="fas fa-search me-2"></i>Qidirish
+                        </button>
+                        <a href="{% url 'mahsulotlar' %}" class="btn btn-outline-secondary w-100">Tozalash</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h2 class="mb-0" style="font-size: 1.4rem;">Mahsulotlar</h2>
+                    <p class="text-muted mb-0" style="font-size: 0.85rem;">{{ page_obj.paginator.count }} ta mahsulot topildi</p>
+                </div>
+                <form method="get" class="d-flex">
+                    <select name="tartiblash" class="form-select" onchange="this.form.submit()" style="font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+                        <option value="yangi" {% if request.GET.tartiblash == 'yangi' %}selected{% endif %}>Yangi</option>
+                        <option value="narx_arzon" {% if request.GET.tartiblash == 'narx_arzon' %}selected{% endif %}>Narxi arzon</option>
+                        <option value="narx_qimmat" {% if request.GET.tartiblash == 'narx_qimmat' %}selected{% endif %}>Narxi qimmat</option>
+                        <option value="reyting" {% if request.GET.reyting == 'reyting' %}selected{% endif %}>Reyting</option>
+                        <option value="sotish" {% if request.GET.tartiblash == 'sotish' %}selected{% endif %}>Ko'p sotilgan</option>
+                    </select>
+                </form>
+            </div>
+            <div class="row g-3">
+                {% for mahsulot in page_obj %}
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="product-card">
+                        {% if mahsulot.eski_narx %}
+                        <span class="product-badge discount">-{{ mahsulot.chegirma_foiz }}%</span>
+                        {% endif %}
+                        {% if mahsulot.rasmlar.first %}
+                        <img src="{{ mahsulot.rasmlar.first.rasm.url }}" alt="{{ mahsulot.nom }}" class="product-img">
+                        {% else %}
+                        <div class="product-img-placeholder">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        {% endif %}
+                        <div class="product-body">
+                            <h5 class="product-title">{{ mahsulot.nom }}</h5>
+                            <div class="product-price">
+                                <span class="current-price">{{ mahsulot.starting_price|floatformat:0 }} so'm</span>
+                                {% if mahsulot.eski_narx %}
+                                <span class="old-price">{{ mahsulot.eski_narx|floatformat:0 }} so'm</span>
+                                {% endif %}
+                            </div>
+                            {% if mahsulot.has_variants %}
+                            <small class="text-muted">Variantlar mavjud</small>
+                            {% endif %}
+                            <div class="d-flex gap-2 mt-2">
+                                <a href="{{ mahsulot.get_absolute_url }}" class="btn btn-primary flex-fill">Ko'rish</a>
+                                <button class="btn btn-outline-danger quick-add-btn" data-product-id="{{ mahsulot.id }}" data-variant-id="{{ mahsulot.default_variant_id|default:'' }}" title="Savatchaga qo'shish">
+                                    <i class="fas fa-cart-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>Mahsulotlar topilmadi</h3>
+                        <p>Boshqa filtrlar bilan qidirib ko'ring</p>
+                        <a href="{% url 'mahsulotlar' %}" class="btn btn-primary">Barcha mahsulotlar</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% if page_obj.paginator.num_pages > 1 %}
+            <nav aria-label="Page navigation" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Oldingi</a>
+                    </li>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                    </li>
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Keyingi</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.quick-add-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.dataset.productId;
+            const variantId = this.dataset.variantId || null;
+            const originalHTML = this.innerHTML;
+            
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            const payload = {
+                mahsulot_id: parseInt(productId),
+                miqdor: 1
+            };
+            if (variantId) {
+                payload.variant_id = parseInt(variantId);
+            }
+            
+            fetch('/api/savatcha/qoshish/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify(payload),
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    this.innerHTML = '<i class="fas fa-check"></i>';
+                    this.classList.remove('btn-outline-danger');
+                    this.classList.add('btn-success');
+                    if (typeof initCartCount === 'function') {
+                        initCartCount();
+                    }
+                    setTimeout(() => {
+                        this.innerHTML = originalHTML;
+                        this.classList.remove('btn-success');
+                        this.classList.add('btn-outline-danger');
+                        this.disabled = false;
+                    }, 1500);
+                } else {
+                    alert('Xatolik: ' + data.error);
+                    this.innerHTML = originalHTML;
+                    this.disabled = false;
+                }
+            })
+            .catch(err => {
+                alert('Xatolik yuz berdi');
+                this.innerHTML = originalHTML;
+                this.disabled = false;
+            });
+        });
+    });
+});
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

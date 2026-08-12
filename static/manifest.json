@@ -1,0 +1,16 @@
+{
+  "name": "TezSavdo",
+  "short_name": "TezSavdo",
+  "description": "O'zbekistonning eng tez va ishonchli onlayn do'koni",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "/static/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

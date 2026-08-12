@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Buyurtma #{{ buyurtma.buyurtma_raqami }} - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Buyurtma #{{ buyurtma.buyurtma_raqami }}</h2>
+        <span class="badge bg-{% if buyurtma.holat == 'kutilmoqda' %}warning{% elif buyurtma.holat == 'tasdiqlandi' %}info{% elif buyurtma.holat == 'jonatilgan' %}primary{% elif buyurtma.holat == 'yetkazildi' %}success{% else %}danger{% endif %} fs-6 px-3 py-2">
+            {{ buyurtma.get_holat_display }}
+        </span>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="fas fa-route me-2 text-primary"></i>Buyurtma holati</h5>
+                </div>
+                <div class="card-body">
+                    <div class="step-indicator">
+                        <div class="step {% if buyurtma.holat != 'kutilmoqda' %}completed{% endif %}">
+                            <div class="step-circle"><i class="fas fa-check"></i></div>
+                            <div class="step-label">Kutilmoqda</div>
+                        </div>
+                        <div class="step {% if buyurtma.holat == 'tasdiqlandi' or buyurtma.holat == 'jonatilgan' or buyurtma.holat == 'yetkazildi' %}completed{% endif %}">
+                            <div class="step-circle"><i class="fas fa-check"></i></div>
+                            <div class="step-label">Tasdiqlandi</div>
+                        </div>
+                        <div class="step {% if buyurtma.holat == 'jonatilgan' or buyurtma.holat == 'yetkazildi' %}completed{% endif %}">
+                            <div class="step-circle"><i class="fas fa-check"></i></div>
+                            <div class="step-label">Yuborildi</div>
+                        </div>
+                        <div class="step {% if buyurtma.holat == 'yetkazildi' %}completed{% endif %}">
+                            <div class="step-circle"><i class="fas fa-check"></i></div>
+                            <div class="step-label">Yetkazildi</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="fas fa-box me-2 text-primary"></i>Buyurtma tarkibi</h5>
+                </div>
+                <div class="card-body">
+                    {% for item in buyurtma.mahsulotlar.all %}
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                        <div>
+                            <h6 class="mb-1">{{ item.mahsulot.nom }}</h6>
+                            <small class="text-muted">{{ item.narx }} so'm x {{ item.miqdor }}</small>
+                        </div>
+                        <span class="fw-bold text-primary">{{ item.jami }} so'm</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="fas fa-receipt me-2 text-primary"></i>To'lov ma'lumotlari</h5>
+                </div>
+                <div class="card-body">
+                    {% if buyurtma.tolov_turi == 'karta' and tolov and tolov.holat == 'tasdiqlandi' %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-credit-card me-2"></i>
+                        <strong>To'lov tasdiqlandi</strong>
+                        <p class="mb-0 mt-2">Demo karta orqali {{ buyurtma.jami }} so'm to'lov amalga oshirildi</p>
+                        {% if tolov.demo_karta %}
+                        <small class="text-muted">Karta: {{ tolov.demo_karta.nom }} ({{ tolov.demo_karta.karta_raqami }})</small>
+                        {% endif %}
+                    </div>
+                    {% elif buyurtma.tolov_turi == 'naqd' %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-money-bill-wave me-2"></i>
+                        <strong>Naqd to'lov</strong>
+                        <p class="mb-0 mt-2">To'lov yetkazish vaqtida amalga oshiriladi</p>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-clock me-2"></i>
+                        <strong>To'lov kutilmoqda</strong>
+                        <p class="mb-0 mt-2">To'lov hali tasdiqlanmagan</p>
+                    </div>
+                    {% endif %}
+                    <a href="{% url 'chek' id=buyurtma.id %}" class="btn btn-primary mt-3" target="_blank">
+                        <i class="fas fa-print me-2"></i>Chekni ko'rish
+                    </a>
+                    {% if buyurtma.holat == 'tasdiqlandi' %}
+                    <a href="{% url 'qr_kod' id=buyurtma.id %}" class="btn btn-success mt-3" target="_blank">
+                        <i class="fas fa-qrcode me-2"></i>QR kodni ko'rish
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2 text-primary"></i>Yetkazish ma'lumotlari</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Ism:</strong> {{ buyurtma.ism }} {{ buyurtma.familiya }}</p>
+                    <p><strong>Telefon:</strong> {{ buyurtma.telefon }}</p>
+                    <p><strong>Manzil:</strong> {{ buyurtma.viloyat }}, {{ buyurtma.raion }}</p>
+                    <p><strong>To'lov turi:</strong> {{ buyurtma.get_tolov_turi_display }}</p>
+                    <p><strong>Jami:</strong> <span class="text-primary fw-bold fs-5">{{ buyurtma.jami }} so'm</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Biz haqimizda - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="fw-bold mb-4" style="font-size: 2.8rem; line-height: 1.2;">TezSavdo - <span class="gradient-text">Isonchli onlayn do'kon</span></h1>
+                <p class="lead text-muted mb-4">2020-yildan beri O'zbekistonda sifatli mahsulotlarni tez va qulay yetkazib berish bilan xizmatingizdamiz.</p>
+                <div class="d-flex gap-4 mb-4">
+                    <div>
+                        <h3 class="fw-bold text-primary mb-0">50K+</h3>
+                        <p class="text-muted small mb-0">Mijozlar</p>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold text-primary mb-0">10K+</h3>
+                        <p class="text-muted small mb-0">Mahsulotlar</p>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold text-primary mb-0">4.8</h3>
+                        <p class="text-muted small mb-0">Reyting</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="{% static 'images/about-hero.svg' %}" alt="Biz haqimizda" class="img-fluid hero-img">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="feature-card text-center p-4 h-100">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Tez yetkazish</h5>
+                <p class="text-muted small mb-0">Barcha viloyatlarga 1-3 kun ichida yetkazib beramiz</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card text-center p-4 h-100">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Kafolat</h5>
+                <p class="text-muted small mb-0">Barcha mahsulotlar original va kafolatlangan</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card text-center p-4 h-100">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h5 class="fw-bold mb-2">24/7 Qo'llab-quvvatlash</h5>
+                <p class="text-muted small mb-0">Har qanday savolingizga javob beramiz</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-5">
+        <div class="card-body p-5">
+            <h3 class="fw-bold text-center mb-4">Bizning maqsadimiz</h3>
+            <p class="text-muted text-center mx-auto" style="max-width: 700px;">
+                TezSavdo sifatli va arzon mahsulotlarni har bir uyga yetkazish orqali mijozlarimizning hayotini osonlashtirishni maqsad qilgan. Biz mijozlarimizning ishonchini qozonish uchun har doim sifatli xizmat va mahsulotlar taqdim etamiz.
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-history text-primary me-2"></i>Tarix</h5>
+                    <p class="text-muted small">2020-yilda Buxoro viloyatida kichik magazin sifatida faoliyatini boshlagan TezSavdo bugungi kunda O'zbekiston bo'ylab minglab mijozlarga xizmat ko'rsatmoqda.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-bullseye text-primary me-2"></i>Vizyon</h5>
+                    <p class="text-muted small">Markaziy Osiyodagi eng yaxshi va ishonchli onlayn do'kon bo'lib, mijozlarimizga eng yaxshi xarid tajribasini taqdim etish.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Kuponlar - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Bosh sahifa</a></li>
+            <li class="breadcrumb-item active">Kuponlar</li>
+        </ol>
+    </nav>
+
+    <h2 class="fw-bold mb-4">Mening kuponlarim</h2>
+
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+            <div class="coupon-card">
+                <div class="coupon-header">
+                    <span class="coupon-badge">YANGI</span>
+                    <h5 class="coupon-title">Birinchi buyurtmaga 20% chegirma</h5>
+                </div>
+                <div class="coupon-body">
+                    <div class="coupon-code">
+                        <span>TEZSAVDO20</span>
+                        <button class="btn btn-sm btn-outline-primary" onclick="navigator.clipboard.writeText('TEZSAVDO20')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <p class="coupon-expiry text-muted small mb-0">Amal qilish muddati: 2024-12-31</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="coupon-card">
+                <div class="coupon-header">
+                    <span class="coupon-badge">CHEGIRMA</span>
+                    <h5 class="coupon-title">50 000 so'mdan yuqori buyurtmalarga 15%</h5>
+                </div>
+                <div class="coupon-body">
+                    <div class="coupon-code">
+                        <span>BIGSAVE15</span>
+                        <button class="btn btn-sm btn-outline-primary" onclick="navigator.clipboard.writeText('BIGSAVE15')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <p class="coupon-expiry text-muted small mb-0">Amal qilish muddati: 2024-11-30</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="coupon-card">
+                <div class="coupon-header">
+                    <span class="coupon-badge">BEPUL</span>
+                    <h5 class="coupon-title">Yetkazish bepul - 100 000 so'mga</h5>
+                </div>
+                <div class="coupon-body">
+                    <div class="coupon-code">
+                        <span>FREESHIP</span>
+                        <button class="btn btn-sm btn-outline-primary" onclick="navigator.clipboard.writeText('FREESHIP')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <p class="coupon-expiry text-muted small mb-0">Amal qilish muddati: 2024-10-31</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

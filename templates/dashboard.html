@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Boshqaruv paneli - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="fw-bold mb-4"><i class="fas fa-tachometer-alt me-2 text-primary"></i>Boshqaruv paneli</h2>
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="stats-card">
+                <i class="fas fa-shopping-cart"></i>
+                <h3>{{ jami_buyurtma }}</h3>
+                <p>Jami buyurtmalar</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card" style="background: linear-gradient(135deg, var(--success), #059669);">
+                <i class="fas fa-wallet"></i>
+                <h3>{{ jami_sarflangan|floatformat:0 }}</h3>
+                <p>Jami sarflangan (so'm)</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card" style="background: linear-gradient(135deg, var(--accent), #0891b2);">
+                <i class="fas fa-heart"></i>
+                <h3>{{ user.istaknafarlar.count }}</h3>
+                <p>Istaklar</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="fas fa-history me-2 text-primary"></i>Oxirgi buyurtmalar</h5>
+                </div>
+                <div class="card-body">
+                    {% if buyurtmalar %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Buyurtma</th>
+                                    <th>Sana</th>
+                                    <th>Holat</th>
+                                    <th>Jami</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for buyurtma in buyurtmalar %}
+                                <tr>
+                                    <td class="fw-bold">#{{ buyurtma.buyurtma_raqami }}</td>
+                                    <td>{{ buyurtma.created_at|date:"d.m.Y H:i" }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if buyurtma.holat == 'kutilmoqda' %}warning{% elif buyurtma.holat == 'tasdiqlandi' %}info{% elif buyurtma.holat == 'jonatilgan' %}primary{% elif buyurtma.holat == 'yetkazildi' %}success{% else %}danger{% endif %}">
+                                            {{ buyurtma.get_holat_display }}
+                                        </span>
+                                    </td>
+                                    <td class="fw-bold">{{ buyurtma.jami }} so'm</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state py-4">
+                        <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                        <h5>Hozircha buyurtmalar yo'q</h5>
+                        <a href="{% url 'mahsulotlar' %}" class="btn btn-primary">Xarid qilishni boshlash</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

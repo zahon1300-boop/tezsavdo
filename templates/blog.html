@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Blog - TezSavdo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Bosh sahifa</a></li>
+            <li class="breadcrumb-item active">Blog</li>
+        </ol>
+    </nav>
+
+    <h2 class="fw-bold mb-4">Blog</h2>
+
+    <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+            <div class="blog-card h-100">
+                <div class="blog-card-img">
+                    <img src="{% static 'images/blog1.jpg' %}" alt="Blog 1">
+                </div>
+                <div class="blog-card-body">
+                    <span class="blog-tag">Yangiliklar</span>
+                    <h5 class="fw-bold mb-2">2024 yilning eng yaxshi mahsulotlari</h5>
+                    <p class="text-muted small mb-3">Bu yilning eng ko'p sotilgan va sifatli mahsulotlari haqida ma'lumot.</p>
+                    <a href="#" class="btn btn-outline-primary btn-sm">Batafsil <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="blog-card h-100">
+                <div class="blog-card-img">
+                    <img src="{% static 'images/blog2.jpg' %}" alt="Blog 2">
+                </div>
+                <div class="blog-card-body">
+                    <span class="blog-tag">Maslahat</span>
+                    <h5 class="fw-bold mb-2">Xarid qilishda tejamkorlik</h5>
+                    <p class="text-muted small mb-3">Bojxona va chegirmalar orqali tejamkor xarid qilish bo'yicha maslahatlar.</p>
+                    <a href="#" class="btn btn-outline-primary btn-sm">Batafsil <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="blog-card h-100">
+                <div class="blog-card-img">
+                    <img src="{% static 'images/blog3.jpg' %}" alt="Blog 3">
+                </div>
+                <div class="blog-card-body">
+                    <span class="blog-tag">Aksiya</span>
+                    <h5 class="fw-bold mb-2">Yangi yil aksiyalari</h5>
+                    <p class="text-muted small mb-3">Yangi yil ayyomlarida katta chegirmalar va sovg'alar.</p>
+                    <a href="#" class="btn btn-outline-primary btn-sm">Batafsil <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="blog-card h-100">
+                <div class="blog-card-img">
+                    <img src="{% static 'images/blog4.jpg' %}" alt="Blog 4">
+                </div>
+                <div class="blog-card-body">
+                    <span class="blog-tag">Yangiliklar</span>
+                    <h5 class="fw-bold mb-2">Yangi filiallar</h5>
+                    <p class="text-muted small mb-3">Yangi filiallarimiz ochilishi va xizmat ko'rsatish hududlari.</p>
+                    <a href="#" class="btn btn-outline-primary btn-sm">Batafsil <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="blog-card h-100">
+                <div class="blog-card-img">
+                    <img src="{% static 'images/blog5.jpg' %}" alt="Blog 5">
+                </div>
+                <div class="blog-card-body">
+                    <span class="blog-tag">Maslahat</span>
+                    <h5 class="fw-bold mb-2">Mahsulot tanlash</h5>
+                    <p class="text-muted small mb-3">Sifatli mahsulotlarni tanlash bo'yicha foydali maslahatlar.</p>
+                    <a href="#" class="btn btn-outline-primary btn-sm">Batafsil <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="blog-card h-100">
+                <div class="blog-card-img">
+                    <img src="{% static 'images/blog6.jpg' %}" alt="Blog 6">
+                </div>
+                <div class="blog-card-body">
+                    <span class="blog-tag">Aksiya</span>
+                    <h5 class="fw-bold mb-2">Mobil ilova</h5>
+                    <p class="text-muted small mb-3">Mobil ilovamizni yuklab oling va chegirmalardan foydalaning.</p>
+                    <a href="#" class="btn btn-outline-primary btn-sm">Batafsil <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link" href="#"><i class="fas fa-chevron-left"></i></a>
+            </li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a>
+            </li>
+        </ul>
+    </nav>
+</div>
+{% endblock %}
