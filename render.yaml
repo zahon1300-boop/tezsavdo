@@ -1,5 +1,7 @@
 services:
-  # Main Web Service
+  # ============================================
+  # Main Web Application Service
+  # ============================================
   - type: web
     name: tezsavdo
     env: python
@@ -9,26 +11,37 @@ services:
     
     # Build Configuration
     buildCommand: >
-      python -m pip install --upgrade pip &&
+      set -e &&
+      echo "Installing dependencies..." &&
+      python -m pip install --upgrade pip setuptools wheel &&
       python -m pip install -r requirements.txt &&
-      python manage.py migrate &&
-      python manage.py collectstatic --noinput
+      echo "Running migrations..." &&
+      python manage.py migrate --noinput &&
+      echo "Collecting static files..." &&
+      python manage.py collectstatic --noinput --clear &&
+      echo "Build completed successfully!"
     
-    # Start Command
+    # Start Command with Optimized Gunicorn Settings
     startCommand: >
       gunicorn config.wsgi:application
       --bind 0.0.0.0:8000
-      --workers 4
+      --workers 3
       --worker-class sync
+      --worker-connections 1000
+      --max-requests 1000
+      --max-requests-jitter 50
       --timeout 120
-      --access-logfile -
-      --error-logfile -
+      --graceful-timeout 30
+      --keep-alive 5
+      --access-logfile /var/log/gunicorn_access.log
+      --error-logfile /var/log/gunicorn_error.log
+      --log-level info
     
-    # Health Check
-    healthCheckPath: /admin/
+    # Health Check Configuration
+    healthCheckPath: /admin/login/
     healthCheckTimeout: 30
     
-    # Environment Variables
+    # Environment Variables (Configure in Render Dashboard)
     envVars:
       - key: DEBUG
         value: "False"
@@ -36,52 +49,147 @@ services:
         value: config.settings
       - key: PYTHON_UNBUFFERED
         value: "1"
+      - key: PYTHONUNBUFFERED
+        value: "1"
       - key: ALLOWED_HOSTS
         value: "tezsavdo-777.onrender.com,localhost,127.0.0.1,*.onrender.com"
+      - key: USE_POSTGRES
+        value: "True"
+      - key: USE_REDIS
+        value: "True"
+      - key: WEB_CONCURRENCY
+        value: "3"
+      - key: GUNICORN_CMD_ARGS
+        value: "--max-requests=1000 --max-requests-jitter=50"
     
-    # Disk Configuration (for media files)
+    # Disk Configuration (for media files storage)
     disk:
       name: media-storage
       mountPath: /opt/render/media
-      sizeGB: 10
+      sizeGB: 20
     
-    # Autoscaling (optional)
+    # Autoscaling and Deployment
     autoDeploy: true
+    preDeployCommand: python manage.py migrate --noinput
     
-    # Logs
+    # Logs Configuration
     logRetentionDays: 30
     
-    # Pre-deploy Script (optional)
-    preDeployCommand: python manage.py migrate --noinput
+    # Mounts for persistent data
+    mounts:
+      - path: /opt/render/media
+        name: media-storage
+      - path: /tmp
+        name: tmp-storage
 
-# Optional: PostgreSQL Database Service
-# Uncomment to use PostgreSQL instead of SQLite
-# databases:
-#   - name: tezsavdo-db
-#     engine: postgres
-#     version: "15"
-#     plan: starter
-#     region: frankfurt
-#     ipAllowList: []
+  # ============================================
+  # PostgreSQL Database Service
+  # ============================================
+  - type: postgres
+    name: tezsavdo-db
+    version: "15"
+    plan: starter
+    region: frankfurt
+    
+    # Database Configuration
+    databaseName: tezsavdo
+    user: tezsavdo_user
+    
+    # Backup Configuration
+    backupRetentionDays: 7
+    
+    # High Availability (optional - uncomment for production)
+    # postgresMajorVersion: "15"
+    
+    # Environment Variables Auto-generated
+    # DATABASE_URL will be automatically available
 
-# Optional: Background Worker (Celery/Background Jobs)
-# Uncomment if you need background task processing
-# workers:
-#   - type: worker
-#     name: tezsavdo-celery
-#     env: python
-#     pythonVersion: 3.12.18
-#     buildCommand: >
-#       python -m pip install --upgrade pip &&
-#       python -m pip install -r requirements.txt
-#     startCommand: celery -A config worker -l info
-#     envVars:
-#       - key: DEBUG
-#         value: "False"
+  # ============================================
+  # Redis Cache Service (Optional but Recommended)
+  # ============================================
+  - type: redis
+    name: tezsavdo-cache
+    version: "7"
+    plan: starter
+    region: frankfurt
+    
+    # Redis Configuration
+    maxmemoryPolicy: allkeys-lru
+    
+    # Environment Variables Auto-generated
+    # REDIS_URL will be automatically available
 
-# Optional: Scheduled Jobs (Cron)
-# Uncomment to add periodic tasks
-# crons:
-#   - id: cleanup-old-files
-#     command: python manage.py clearsessions
-#     schedule: "0 2 * * *"  # Daily at 2 AM UTC
+  # ============================================
+  # Background Worker Service (Celery/RQ)
+  # ============================================
+  - type: worker
+    name: tezsavdo-worker
+    env: python
+    pythonVersion: 3.12.18
+    plan: standard
+    region: frankfurt
+    
+    buildCommand: >
+      python -m pip install --upgrade pip &&
+      python -m pip install -r requirements.txt &&
+      echo "Worker build completed"
+    
+    startCommand: >
+      celery -A config worker
+      --loglevel=info
+      --concurrency=2
+      --max-tasks-per-child=1000
+      --time-limit=3600
+      --soft-time-limit=3300
+    
+    # Environment Variables (inherits from web service)
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings
+      - key: CELERY_BROKER_URL
+        fromService: tezsavdo-cache
+        property: redisUrl
+      - key: CELERY_RESULT_BACKEND
+        fromService: tezsavdo-cache
+        property: redisUrl
+    
+    # Don't auto-deploy initially (test first)
+    autoDeploy: false
+
+# ============================================
+# Scheduled Jobs (Cron Tasks)
+# ============================================
+crons:
+  - id: cleanup-sessions
+    command: python manage.py clearsessions
+    schedule: "0 2 * * *"  # Daily at 2 AM UTC
+    
+  - id: cleanup-old-media
+    command: python manage.py cleanup_old_media
+    schedule: "0 3 * * 0"  # Weekly on Sunday at 3 AM UTC
+    
+  - id: database-backup
+    command: python manage.py dumpdata --natural-foreign --natural-primary -e contenttypes -e auth.Permission --indent 3 > /tmp/backup_$(date +\%Y\%m\%d_\%H\%M\%S).json
+    schedule: "0 4 * * *"  # Daily at 4 AM UTC
+    
+  - id: send-admin-reports
+    command: python manage.py send_daily_reports
+    schedule: "0 8 * * *"  # Daily at 8 AM UTC
+
+# ============================================
+# Environment-specific Variables
+# ============================================
+# Add these in Render Dashboard under "Environment" for each service:
+#
+# SECRET_KEY=<generate-very-long-random-string>
+# ALLOWED_HOSTS=tezsavdo-777.onrender.com,localhost,127.0.0.1
+# DATABASE_URL=postgres://user:pass@host:5432/dbname (auto-generated from postgres service)
+# REDIS_URL=redis://host:port (auto-generated from redis service)
+# CELERY_BROKER_URL=redis://host:port (same as REDIS_URL)
+# CELERY_RESULT_BACKEND=redis://host:port (same as REDIS_URL)
+# EMAIL_HOST_USER=your-email@gmail.com
+# EMAIL_HOST_PASSWORD=your-app-password
+# STRIPE_SECRET_KEY=<if-using-stripe>
+# STRIPE_PUBLISHABLE_KEY=<if-using-stripe>
