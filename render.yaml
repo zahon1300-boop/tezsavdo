@@ -55,7 +55,7 @@ services:
       - key: PYTHONUNBUFFERED
         value: "1"
       - key: ALLOWED_HOSTS
-        value: "tezsavdo-777.onrender.com,localhost,127.0.0.1,*.onrender.com"
+        value: "tezsavdo-offical.onrender.com,localhost,127.0.0.1,*.onrender.com"
       - key: USE_POSTGRES
         value: "True"
       - key: USE_REDIS
@@ -180,19 +180,3 @@ crons:
   - id: send-admin-reports
     command: python manage.py send_daily_reports
     schedule: "0 8 * * *"  # Daily at 8 AM UTC
-
-# ============================================
-# Environment-specific Variables
-# ============================================
-# Add these in Render Dashboard under "Environment" for each service:
-#
-# SECRET_KEY=<generate-very-long-random-string>
-# ALLOWED_HOSTS=tezsavdo-777.onrender.com,localhost,127.0.0.1
-# DATABASE_URL=postgres://user:pass@host:5432/dbname (auto-generated from postgres service)
-# REDIS_URL=redis://host:port (auto-generated from redis service)
-# CELERY_BROKER_URL=redis://host:port (same as REDIS_URL)
-# CELERY_RESULT_BACKEND=redis://host:port (same as REDIS_URL)
-# EMAIL_HOST_USER=your-email@gmail.com
-# EMAIL_HOST_PASSWORD=your-app-password
-# STRIPE_SECRET_KEY=<if-using-stripe>
-# STRIPE_PUBLISHABLE_KEY=<if-using-stripe>
