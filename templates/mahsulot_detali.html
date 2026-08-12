@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static shop_tags %}
 
 {% block title %}{{ mahsulot.nom }} - TezSavdo{% endblock %}
 
@@ -17,9 +17,9 @@
         <div class="col-lg-5">
             <div class="card border-0 shadow-sm">
                 {% if default_variant and default_variant.image %}
-                <img src="{{ default_variant.image.url }}" class="card-img-top" alt="{{ mahsulot.nom }}" id="mainImage" style="height: 450px; object-fit: cover; border-radius: var(--radius-lg);">
+                <img src="{{ default_variant|variant_image }}" class="card-img-top" alt="{{ mahsulot.nom }}" id="mainImage" style="height: 450px; object-fit: cover; border-radius: var(--radius-lg);">
                 {% elif mahsulot.rasmlar.first %}
-                <img src="{{ mahsulot.rasmlar.first.rasm.url }}" class="card-img-top" alt="{{ mahsulot.nom }}" id="mainImage" style="height: 450px; object-fit: cover; border-radius: var(--radius-lg);">
+                <img src="{{ mahsulot|first_image }}" class="card-img-top" alt="{{ mahsulot.nom }}" id="mainImage" style="height: 450px; object-fit: cover; border-radius: var(--radius-lg);">
                 {% else %}
                 <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 450px; border-radius: var(--radius-lg);">
                     <i class="fas fa-image fa-4x text-muted"></i>

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static shop_tags %}
 
 {% block title %}Savatcha - TezSavdo{% endblock %}
 
@@ -15,9 +15,7 @@
             <div class="card mb-3 border-0 shadow-sm cart-item">
                 <div class="row g-0">
                     <div class="col-md-3">
-                        {% if item.mahsulot.rasmlar.first %}
-                        <img src="{{ item.mahsulot.rasmlar.first.rasm.url }}" class="img-fluid h-100" style="object-fit: cover; min-height: 150px;" alt="{{ item.mahsulot.nom }}">
-                        {% endif %}
+                        <img src="{{ item.mahsulot|first_image }}" class="img-fluid h-100" style="object-fit: cover; min-height: 150px;" alt="{{ item.mahsulot.nom }}">
                     </div>
                     <div class="col-md-9">
                         <div class="card-body">

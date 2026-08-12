@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
-from .models import Foydalanuvchi, FoydalanuvchiManzil, Fikr, Buyurtma
+from .models import Foydalanuvchi, FoydalanuvchiManzil, Fikr, Buyurtma, MahsulotVariant
 
 
 class RoyxatanOtishForm(UserCreationForm):
@@ -76,3 +76,33 @@ class BuyurtmaForm(forms.Form):
     izoh = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
     tolov_turi = forms.ChoiceField(choices=Buyurtma.TOLOM_TURLARI)
     manzil_id = forms.IntegerField(required=False)
+
+
+class MahsulotVariantForm(forms.ModelForm):
+    class Meta:
+        model = MahsulotVariant
+        exclude = ['mahsulot']
+        widgets = {
+            'narx': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'eski_narx': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'soni': forms.NumberInput(attrs={'class': 'form-control'}),
+            'sku': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Masalan: IPHONE-16-PRO-256'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+    def clean_sku(self):
+        sku = self.cleaned_data.get('sku', '').strip()
+        if not sku:
+            return sku
+
+        instance = self.instance
+        existing = MahsulotVariant.objects.filter(sku=sku)
+        if instance.pk:
+            existing = existing.exclude(pk=instance.pk)
+
+        if existing.exists():
+            raise forms.ValidationError(
+                f'"{sku}" SKU allaqachon mavjud. Boshqa SKU kiriting.'
+            )
+        return sku

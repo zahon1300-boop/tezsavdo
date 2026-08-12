@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static shop_tags %}
 
 {% block title %}Istaklarim - TezSavdo{% endblock %}
 
@@ -11,9 +11,7 @@
         {% for item in istaknafarlar %}
         <div class="col-6 col-md-4 col-lg-3 mb-4">
             <div class="card h-100 product-card hover-lift">
-                {% if item.mahsulot.rasmlar.first %}
-                <img src="{{ item.mahsulot.rasmlar.first.rasm.url }}" class="card-img-top" alt="{{ item.mahsulot.nom }}">
-                {% endif %}
+                <img src="{{ item.mahsulot|first_image }}" class="card-img-top" alt="{{ item.mahsulot.nom }}">
                 <div class="card-body">
                     <h6 class="card-title">{{ item.mahsulot.nom }}</h6>
                     <span class="current-price">{{ item.mahsulot.narx }} so'm</span>

@@ -3,6 +3,7 @@ from django import forms
 from django.db import models
 from django.utils.html import format_html
 from .models import *
+from .forms import MahsulotVariantForm
 
 
 class VariantOptionInline(admin.TabularInline):
@@ -65,6 +66,7 @@ class MahsulotVariantInline(admin.TabularInline):
     model = MahsulotVariant
     extra = 1
     show_change_link = True
+    form = MahsulotVariantForm
 
 
 @admin.register(Mahsulot)
@@ -124,6 +126,7 @@ class MahsulotVariantAdmin(admin.ModelAdmin):
     list_filter = ['mahsulot__kategoriya', 'mahsulot__brend', 'is_active']
     search_fields = ['mahsulot__nom', 'sku']
     list_editable = ['narx', 'eski_narx', 'soni', 'is_active']
+    form = MahsulotVariantForm
     inlines = [VariantOptionInline, VariantRasmInline]
     actions = ['activate_variants', 'deactivate_variants', 'update_stock']
 

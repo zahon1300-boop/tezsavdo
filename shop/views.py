@@ -395,7 +395,7 @@ def checkout(request):
                 })
         form = BuyurtmaForm(initial=initial)
 
-    viloyatlar = ViloyatRaioni.objects.filter(is_active=True).values_list('viloyat', flat=True).distinct()
+    viloyatlar = sorted(set(ViloyatRaioni.objects.filter(is_active=True).values_list('viloyat', flat=True)))
 
     context = {
         'form': form,

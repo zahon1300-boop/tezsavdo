@@ -2552,6 +2552,69 @@ body.dark-mode .checkout-input::placeholder {
     color: #64748b;
 }
 
+body.dark-mode .checkout-card {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+body.dark-mode .checkout-card-header {
+    background: #1e293b !important;
+    border-bottom-color: #334155;
+    color: #f1f5f9;
+}
+
+body.dark-mode .checkout-card-title {
+    color: #f1f5f9;
+}
+
+body.dark-mode .checkout-card-body {
+    color: #f1f5f9;
+}
+
+body.dark-mode .checkout-title {
+    color: #f1f5f9;
+}
+
+body.dark-mode .checkout-submit-btn {
+    background: #6366f1;
+    border-color: #6366f1;
+    color: #ffffff;
+}
+
+body.dark-mode .checkout-submit-btn:hover {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    color: #ffffff;
+}
+
+body.dark-mode .checkout-item-name {
+    color: #f1f5f9;
+}
+
+body.dark-mode .checkout-item-variant {
+    color: #94a3b8;
+}
+
+body.dark-mode .checkout-item-price {
+    color: #f1f5f9;
+}
+
+body.dark-mode .checkout-summary-hr {
+    border-color: #334155;
+}
+
+body.dark-mode .checkout-total-label {
+    color: #f1f5f9;
+}
+
+body.dark-mode .checkout-total-price {
+    color: #818cf8;
+}
+
+body.dark-mode .checkout-help-text {
+    color: #94a3b8;
+}
+
 body.dark-mode .mobile-bottom-nav {
     background: rgba(30, 41, 59, 0.98);
     border-top-color: rgba(99, 102, 241, 0.15);

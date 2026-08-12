@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static shop_tags %}
 
 {% block title %}Mahsulotlar - TezSavdo{% endblock %}
 
@@ -145,7 +145,7 @@
                         <span class="product-badge discount">-{{ mahsulot.chegirma_foiz }}%</span>
                         {% endif %}
                         {% if mahsulot.rasmlar.first %}
-                        <img src="{{ mahsulot.rasmlar.first.rasm.url }}" alt="{{ mahsulot.nom }}" class="product-img">
+                        <img src="{{ mahsulot|first_image }}" alt="{{ mahsulot.nom }}" class="product-img">
                         {% else %}
                         <div class="product-img-placeholder">
                             <i class="fas fa-image"></i>
